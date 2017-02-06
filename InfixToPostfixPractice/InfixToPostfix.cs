@@ -18,9 +18,10 @@ namespace InfixToPostfixPractice
         private void ConvertToResult()
         {
             Result.Clear();
-            foreach (var item in _store )
+            while (_store.Count > 0)
             {
-                Result.Add(item);
+                var tmp = _store.Dequeue();
+                Result.Add(tmp);
             }
         }
 
@@ -61,26 +62,26 @@ namespace InfixToPostfixPractice
         /// </summary>
         private void InputToPostFix()
         {
-            //while (_input.Count > 0)
-            //{
+            while (_input.Count > 0)
+            {
                 // 如果下個讀取內容是 (
 
                 // 如果下個讀取內容是 四則運算元
 
                 // 下個讀取內容是 數字
 
-                //string tmp = _input.Dequeue();
+                string tmp = _input.Dequeue();
 
-                //if (_operandsArithmetic.Contains(tmp))
-                //{ InputToPostFix(); }
+                if (_operandsArithmetic.Contains(tmp))
+                { InputToPostFix(); }
 
-                //_store.Push(tmp);
-            //}
+                _store.Enqueue(tmp);
+            }
         }
 
         private List<string> _operandsArithmetic = new List<string> { "+", "*", "(", ")" };
         private Queue<string> _input = new Queue<string>();
-        private Stack<string> _store = new Stack<string>();
+        private Queue<string> _store = new Queue<string>();
 
         public List<string> Result { get; private set; } = new List<string>();
     }
