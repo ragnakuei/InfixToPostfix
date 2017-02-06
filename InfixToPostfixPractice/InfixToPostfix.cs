@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InfixToPostfixPractice
 {
     public class InfixToPostfix
     {
-        public InfixToPostfix(string input)
+        public InfixToPostfix() { }
+
+        public string GetResult(string input)
         {
             Queue<string> inputByPart = InputToQueue(input);
-            Queue<string> result = InputToPostFix(inputByPart);
-            Result = result.ToList();
+            Queue<string> postfix = InputToPostFix(inputByPart);
+            var result = string.Concat(postfix.ToList());
+            return result;
         }
 
         /// <summary>
@@ -48,6 +48,7 @@ namespace InfixToPostfixPractice
             if (value != string.Empty) result.Enqueue(value);
             return result;
         }
+
 
         /// <summary>
         /// 將 Input Queue 轉為 後序表示
@@ -92,15 +93,6 @@ namespace InfixToPostfixPractice
             return result;
         }
 
-
-        private static void QueueAdd(Queue<string> result, Queue<string> input)
-        {
-            while (input.Count > 0)
-            {
-                result.Enqueue(input.Dequeue());
-            }
-        }
-
         private bool IsOperand(string input)
         {
             string[] operands = new string[] { "+", "-", "*", "/" };
@@ -122,8 +114,6 @@ namespace InfixToPostfixPractice
         {
             return input == ")";
         }
-
-        public List<string> Result { get; private set; } = new List<string>();
     }
 
     public static class MyExend
