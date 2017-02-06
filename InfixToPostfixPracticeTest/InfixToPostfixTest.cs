@@ -38,6 +38,20 @@ namespace InfixToPostfixPracticeTest
         }
 
         [TestMethod]
+        public void InfixToPostfix_1_divide_2_minus_3()
+        {
+            var input = "1/2-3";
+            var expected = new List<string> {
+                "1", "2", "/", "3", "-"
+            };
+            InfixToPostfix target = new InfixToPostfix(input);
+
+            var actual = target.Result;
+
+            expected.ToExpectedObject().ShouldEqual(actual);
+        }
+
+        [TestMethod]
         public void InfixToPostfix_1_minus_2()
         {
             var input = "1-2";
@@ -94,6 +108,20 @@ namespace InfixToPostfixPracticeTest
         }
 
         [TestMethod]
+        public void InfixToPostfix_1_minus_parentheses_2_divide_3_parentheses()
+        {
+            var input = "1-(2/3)";
+            var expected = new List<string> {
+                "1", "2", "3", "/", "-",
+            };
+            InfixToPostfix target = new InfixToPostfix(input);
+
+            var actual = target.Result;
+
+            expected.ToExpectedObject().ShouldEqual(actual);
+        }
+
+        [TestMethod]
         public void InfixToPostfix_1_minus_2_2parentheses_divided_3()
         {
             var input = "((1+2))/3";
@@ -127,20 +155,6 @@ namespace InfixToPostfixPracticeTest
             var input = "(1+(2-3))/4";
             var expected = new List<string> {
                 "1", "2", "3", "-", "+", "4", "/",
-            };
-            InfixToPostfix target = new InfixToPostfix(input);
-
-            var actual = target.Result;
-
-            expected.ToExpectedObject().ShouldEqual(actual);
-        }
-
-        [TestMethod]
-        public void InfixToPostfix_1_divide_2_minus_3()
-        {
-            var input = "1/2-3";
-            var expected = new List<string> {
-                "1", "2", "/", "3", "-"
             };
             InfixToPostfix target = new InfixToPostfix(input);
 
