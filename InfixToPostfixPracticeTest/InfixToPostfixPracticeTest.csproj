@@ -53,6 +53,12 @@
     <Compile Include="InfixToPostfixTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InfixToPostfixPractice\InfixToPostfixPractice.csproj">
+      <Project>{99601b50-24f5-4c2c-bc55-7a9bb8958e37}</Project>
+      <Name>InfixToPostfixPractice</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
