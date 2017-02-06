@@ -45,7 +45,7 @@ namespace InfixToPostfixPractice
                     value = string.Empty;
                 }
             }
-            if(value != string.Empty) result.Enqueue(value);
+            if (value != string.Empty) result.Enqueue(value);
             return result;
         }
 
@@ -54,79 +54,37 @@ namespace InfixToPostfixPractice
         /// </summary>
         private Queue<string> InputToPostFix(Queue<string> input)
         {
+            Stack<string> operand = new Stack<string>();
             Queue<string> result = new Queue<string>();
 
+            string next = string.Empty;
             while (input.Count > 0)
             {
-                string nextConteent = input.Peek();
-                if (nextConteent == _leftParentheses)
-                {      // 如果下個讀取內容是 (
-                    var tmpResult = ParenthesesToPostFix(input);
-                    QueueAdd(result, tmpResult);
+                next  = input.Peek();
+                if (IsOperand(next) || IsLeftParentheses(next))
+                {
+                    operand.Push(input.Dequeue());
+                }
+                else if (IsRightParentheses(next))
+                {
+                    input.Dequeue(); // 刪掉 )
+                    if(IsOperand(operand.Peek())) result.Enqueue(operand.Pop());
+                    operand.Pop();   // 刪掉 (
                 }
                 else
-                {      // 如果下個讀取內容不是 (
-                    var tmpResult = NoParenthesesToPostFix(input);
-                    QueueAdd(result, tmpResult);
+                {
+                    result.Enqueue(input.Dequeue());
                 }
+            }
+
+            while (operand.Count > 0)    // 要把最後的 operand 放至 result 中
+            {
+                result.Enqueue(operand.Pop());
             }
 
             return result;
         }
 
-        /// <summary>
-        /// 將沒有引號的 Queue 轉成 PostFix
-        /// </summary>
-        private Queue<string> NoParenthesesToPostFix(Queue<string> input)
-        {
-            Queue<string> result = new Queue<string>();
-            while (input.Count > 0)
-            {
-                string tmp = input.Dequeue();
-
-                if (_operandsArithmetic.Contains(tmp))
-                {
-                    var tmpResult = NoParenthesesToPostFix(input);
-                    QueueAdd(result, tmpResult);
-                }
-
-                result.Enqueue(tmp);
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 將有引號的 Queue 轉成 PostFix
-        /// </summary>
-        private Queue<string> ParenthesesToPostFix(Queue<string> input)
-        {
-            string nextContent = input.Dequeue();
-            Queue<string> noParenthesesResult = new Queue<string>();
-            
-            // 將 ( ) 中間的部份儲存下來，丟給 NoParenthesesToPostFix() 處理
-            // 如果 ( ) 裡面還有 ( ，就遞迴處理
-            while (nextContent != _rightParentheses)
-            {
-                nextContent = input.Peek();
-                if (nextContent == _leftParentheses)
-                {
-                    var parenthesesResult = ParenthesesToPostFix(input);
-                    nextContent = input.Peek();
-
-                    if (nextContent == _rightParentheses)
-                    {   // 為了 (( )) 的情況
-                        nextContent = input.Dequeue();   // 刪掉 )
-                        return parenthesesResult;
-                    }
-                }
-                
-                noParenthesesResult.Enqueue(input.Dequeue());
-                nextContent = input.Peek();
-            }
-            
-            nextContent = input.Dequeue();     // 刪掉 )
-            return NoParenthesesToPostFix(noParenthesesResult);
-        }
 
         private static void QueueAdd(Queue<string> result, Queue<string> input)
         {
@@ -136,9 +94,21 @@ namespace InfixToPostfixPractice
             }
         }
 
-        private List<string> _operandsArithmetic = new List<string> { "+", "-", "*", "/" };
-        private const string _leftParentheses = "(";
-        private const string _rightParentheses = ")";
+        private bool IsOperand(string input)
+        {
+            string[] operands = new string[]{ "+", "-", "*", "/" };
+            return operands.Contains(input);
+        }
+
+        private bool IsLeftParentheses(string input)
+        {
+            return input == "(";
+        }
+
+        private bool IsRightParentheses(string input)
+        {
+            return input == ")";
+        }
 
         public List<string> Result { get; private set; } = new List<string>();
     }
