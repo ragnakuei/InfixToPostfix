@@ -79,7 +79,7 @@ namespace InfixToPostfixPractice
             }
         }
 
-        private List<string> _operandsArithmetic = new List<string> { "+", "*", "(", ")" };
+        private List<string> _operandsArithmetic = new List<string> { "+", "-", "*", "(", ")" };
         private Queue<string> _input = new Queue<string>();
         private Queue<string> _store = new Queue<string>();
 
