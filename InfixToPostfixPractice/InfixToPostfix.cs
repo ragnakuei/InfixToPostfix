@@ -10,26 +10,17 @@ namespace InfixToPostfixPractice
     {
         public InfixToPostfix(string input)
         {
-            InputToQueue(input);
-            InputToPostFix();
-            ConvertToResult();
-        }
-
-        private void ConvertToResult()
-        {
-            Result.Clear();
-            while (_store.Count > 0)
-            {
-                var tmp = _store.Dequeue();
-                Result.Add(tmp);
-            }
+            Queue<string> inputByPart = InputToQueue(input);
+            Queue<string> result = InputToPostFix(inputByPart);
+            Result = result.ToList();
         }
 
         /// <summary>
         /// 將輸入的資料轉成 特殊符號 或 連續數字 為一組，來存入 Queue
         /// </summary>
-        private void InputToQueue(string input)
+        private Queue<string> InputToQueue(string input)
         {
+            Queue<string> result = new Queue<string>();
             string value = string.Empty;
             bool digitIsNumber = false;
 
@@ -45,43 +36,93 @@ namespace InfixToPostfixPractice
 
                 if (value == string.Empty)
                 {  // 發生情況為 第一個字元為特殊符號 或是 連續字元為特殊符號
-                    _input.Enqueue(input[i].ToString());
+                    result.Enqueue(input[i].ToString());
                 }
                 else
                 {
-                    _input.Enqueue(value);
-                    _input.Enqueue(input[i].ToString());
+                    result.Enqueue(value);
+                    result.Enqueue(input[i].ToString());
                     value = string.Empty;
                 }
             }
-            _input.Enqueue(value);
+            result.Enqueue(value);
+            return result;
         }
 
         /// <summary>
         /// 將 Input Queue 轉為 後序表示
         /// </summary>
-        private void InputToPostFix()
+        private Queue<string> InputToPostFix(Queue<string> input)
         {
-            while (_input.Count > 0)
+            Queue<string> result = new Queue<string>();
+
+            while (input.Count > 0)
             {
-                // 如果下個讀取內容是 (
-
-                // 如果下個讀取內容是 四則運算元
-
-                // 下個讀取內容是 數字
-
-                string tmp = _input.Dequeue();
-
-                if (_operandsArithmetic.Contains(tmp))
-                { InputToPostFix(); }
-
-                _store.Enqueue(tmp);
+                string nextConteent = input.Peek();
+                if (nextConteent == _parentheses[0])
+                {      // 如果下個讀取內容是 (
+                    result = ParenthesesToPostFix(input);
+                }
+                else
+                {      // 如果下個讀取內容不是 (
+                    result = NoParenthesesToPostFix(input);
+                }
             }
+
+            return result;
         }
 
-        private List<string> _operandsArithmetic = new List<string> { "+", "-", "*", "/", "(", ")" };
-        private Queue<string> _input = new Queue<string>();
-        private Queue<string> _store = new Queue<string>();
+        /// <summary>
+        /// 將沒有引號的 Queue 轉成 PostFix
+        /// </summary>
+        private Queue<string> NoParenthesesToPostFix(Queue<string> input)
+        {
+            Queue<string> result = new Queue<string>();
+            while (input.Count > 0)
+            {
+                string tmp = input.Dequeue();
+
+                if (_operandsArithmetic.Contains(tmp))
+                {
+                    var tmpResult = NoParenthesesToPostFix(input);
+
+                    // 將 Queue 加至另一個 Queue 後面
+                    while (tmpResult.Count > 0)
+                    {
+                        result.Enqueue(tmpResult.Dequeue());
+                    }
+                }
+
+                result.Enqueue(tmp);
+            }
+            return result;
+        }
+
+        private Queue<string> ParenthesesToPostFix(Queue<string> input)
+        {
+            Queue<string> result = new Queue<string>();
+            while (input.Count > 0)
+            {
+                string tmp = input.Dequeue();
+
+                if (_operandsArithmetic.Contains(tmp))
+                {
+                    var tmpResult = NoParenthesesToPostFix(input);
+
+                    // 將 Queue 加至另一個 Queue 後面
+                    while (tmpResult.Count > 0)
+                    {
+                        result.Enqueue(tmpResult.Dequeue());
+                    }
+                }
+
+                result.Enqueue(tmp);
+            }
+            return result;
+        }
+
+        private List<string> _operandsArithmetic = new List<string> { "+", "-", "*", "/"};
+        private List<string> _parentheses = new List<string> { "(", ")" };
 
         public List<string> Result { get; private set; } = new List<string>();
     }
