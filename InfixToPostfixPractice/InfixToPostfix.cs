@@ -52,7 +52,7 @@ namespace InfixToPostfixPractice
         /// <summary>
         /// 將 Input Queue 轉為 後序表示
         /// </summary>
-        private Queue<string> InputToPostFix(Queue<string> input, int level = 0)
+        private Queue<string> InputToPostFix(Queue<string> input, int parenthesesLevel = 0)
         {
             Stack<string> operand = new Stack<string>();
             Queue<string> result = new Queue<string>();
@@ -63,41 +63,19 @@ namespace InfixToPostfixPractice
                 next = input.Peek();
                 if (IsLeftParentheses(next))
                 {
-                    input.Dequeue();
-                    var tmpResult = InputToPostFix(input, level + 1);
+                    StartParentheses(input, parenthesesLevel, result);
 
-                    foreach (var item in tmpResult)
-                    {
-                        result.Enqueue(item);
-                    }
-
-                    // 處理完 (
+                    // 處理完 ( )
                     continue;
                 }
 
-                if (IsOperand(next))
+                if (Is4Operand(next))
                 {
-                    // 先乘除後加減的判斷
-                    int previousPriority = operand.Count > 0
-                        ? GetOperandPriority(operand.Peek())
-                        : 0;
-                    int nextPriority = GetOperandPriority(next);
-
-                    if (previousPriority > nextPriority)
-                    {
-                        result.Enqueue(operand.Pop());
-                        operand.Push(input.Dequeue());
-                    }
-                    else
-                    {
-                        operand.Push(input.Dequeue());
-                    }
+                    Process4Operand(input, operand, result, next);
                 }
                 else if (IsRightParentheses(next))
                 {
-                    input.Dequeue(); // 刪掉 )
-                    if (operand.Count <= 0) break;   // 為了 (( )) 而存在的判斷
-                    if (IsOperand(operand.Peek())) result.Enqueue(operand.Pop());
+                    FinishParentheses(input, operand, result);
                     break;
                 }
                 else
@@ -114,13 +92,54 @@ namespace InfixToPostfixPractice
             return result;
         }
 
-        private bool IsOperand(string input)
+        private void Process4Operand(Queue<string> input, Stack<string> operand, Queue<string> result, string next)
+        {
+            // 先乘除後加減的判斷
+            int previousPriority = operand.Count > 0
+                ? GetOperandPriority(operand.Peek())
+                : 0;
+            int nextPriority = GetOperandPriority(next);
+
+            if (previousPriority > nextPriority)
+            {
+                result.Enqueue(operand.Pop());
+            }
+            operand.Push(input.Dequeue());
+        }
+
+        /// <summary>
+        /// 進入 ( 前的處理，每進一層 (，parenthesesLevel 就會 + 1
+        /// </summary>
+        private void StartParentheses(Queue<string> input, int parenthesesLevel, Queue<string> result)
+        {
+            input.Dequeue();
+            var tmpResult = InputToPostFix(input, parenthesesLevel + 1);
+
+            // 將
+            foreach (var item in tmpResult)
+            {
+                result.Enqueue(item);
+            }
+        }
+
+        /// <summary>
+        /// 完成 ) 後的處理
+        /// </summary>
+        private void FinishParentheses(Queue<string> input, Stack<string> operand, Queue<string> result)
+        {
+            input.Dequeue();                    // 刪掉 )
+            if (operand.Count <= 0) return; ;   // 為了 (( )) 而存在的判斷，也就是不需要進行多餘的處理
+            if (Is4Operand(operand.Peek()))     // 離開 ) 前，如果有未更新至 result 的 operand 就要放進去
+                result.Enqueue(operand.Pop());
+        }
+
+        private bool Is4Operand(string input)
         {
             string[] operands = new string[] { "+", "-", "*", "/" };
             return operands.Contains(input);
         }
 
-        private bool IsHighOperand(string input)
+        private bool IsOperandMultipleOrDivide(string input)
         {
             string[] operands = new string[] { "*", "/" };
             return operands.Contains(input);
@@ -143,7 +162,7 @@ namespace InfixToPostfixPractice
             return result;
         }
 
-        private Dictionary<string, int> _operandPriority = new Dictionary<string, int> {
+        private readonly Dictionary<string, int> _operandPriority = new Dictionary<string, int> {
             {"+",1 },
             {"-",1 },
             {"*",2 },
