@@ -14,9 +14,7 @@ namespace InfixToPostfixPracticeTest
         {
             var input = "1+2";
             var expected = new List<string> {
-                "1",
-                "2",
-                "+",
+                "1", "2", "+",
             };
             InfixToPostfix target = new InfixToPostfix(input);
 
@@ -30,11 +28,7 @@ namespace InfixToPostfixPracticeTest
         {
             var input = "1+2*3";
             var expected = new List<string> {
-                "1",
-                "2",
-                "3",
-                "*",
-                "+",
+                "1", "2", "3", "*", "+",
             };
             InfixToPostfix target = new InfixToPostfix(input);
 
@@ -48,9 +42,7 @@ namespace InfixToPostfixPracticeTest
         {
             var input = "1-2";
             var expected = new List<string> {
-                "1",
-                "2",
-                "-"
+                "1", "2", "-"
             };
             InfixToPostfix target = new InfixToPostfix(input);
 
@@ -64,9 +56,7 @@ namespace InfixToPostfixPracticeTest
         {
             var input = "1/2";
             var expected = new List<string> {
-                "1",
-                "2",
-                "/"
+                "1", "2", "/"
             };
             InfixToPostfix target = new InfixToPostfix(input);
 
@@ -80,9 +70,7 @@ namespace InfixToPostfixPracticeTest
         {
             var input = "(1+2)";
             var expected = new List<string> {
-                "1",
-                "2",
-                "+"
+                "1", "2", "+"
             };
             InfixToPostfix target = new InfixToPostfix(input);
 
@@ -96,11 +84,7 @@ namespace InfixToPostfixPracticeTest
         {
             var input = "(1+2)*3";
             var expected = new List<string> {
-                "1",
-                "2",
-                "+",
-                "3",
-                "*",
+                "1", "2", "+", "3", "*",
             };
             InfixToPostfix target = new InfixToPostfix(input);
 
@@ -114,11 +98,7 @@ namespace InfixToPostfixPracticeTest
         {
             var input = "((1+2))/3";
             var expected = new List<string> {
-                "1",
-                "2",
-                "+",
-                "3",
-                "/",
+                "1", "2", "+", "3", "/",
             };
             InfixToPostfix target = new InfixToPostfix(input);
 
@@ -132,13 +112,21 @@ namespace InfixToPostfixPracticeTest
         {
             var input = "((1+2)-3)/4";
             var expected = new List<string> {
-                "1",
-                "2",
-                "+",
-                "3",
-                "-",
-                "4",
-                "/",
+                "1", "2", "+", "3", "-", "4", "/",
+            };
+            InfixToPostfix target = new InfixToPostfix(input);
+
+            var actual = target.Result;
+
+            expected.ToExpectedObject().ShouldEqual(actual);
+        }
+
+        [TestMethod]
+        public void InfixToPostfix_1_add_parentheses_2_minus_3_parentheses_divided_4()
+        {
+            var input = "(1+(2-3))/4";
+            var expected = new List<string> {
+                "1", "2", "3", "-", "+", "4", "/",
             };
             InfixToPostfix target = new InfixToPostfix(input);
 
