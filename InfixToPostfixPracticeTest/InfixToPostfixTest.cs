@@ -126,5 +126,25 @@ namespace InfixToPostfixPracticeTest
 
             expected.ToExpectedObject().ShouldEqual(actual);
         }
+
+        [TestMethod]
+        public void InfixToPostfix_1_minus_2_parentheses_minus_3_divided_4()
+        {
+            var input = "((1+2)-3)/4";
+            var expected = new List<string> {
+                "1",
+                "2",
+                "+",
+                "3",
+                "-",
+                "4",
+                "/",
+            };
+            InfixToPostfix target = new InfixToPostfix(input);
+
+            var actual = target.Result;
+
+            expected.ToExpectedObject().ShouldEqual(actual);
+        }
     }
 }
