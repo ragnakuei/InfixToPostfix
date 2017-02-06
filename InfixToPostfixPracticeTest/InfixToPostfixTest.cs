@@ -58,5 +58,21 @@ namespace InfixToPostfixPracticeTest
 
             expected.ToExpectedObject().ShouldEqual(actual);
         }
+
+        [TestMethod]
+        public void InfixToPostfix_1_divided_2()
+        {
+            var input = "1/2";
+            var expected = new List<string> {
+                "1",
+                "2",
+                "/"
+            };
+            InfixToPostfix target = new InfixToPostfix(input);
+
+            var actual = target.Result;
+
+            expected.ToExpectedObject().ShouldEqual(actual);
+        }
     }
 }
