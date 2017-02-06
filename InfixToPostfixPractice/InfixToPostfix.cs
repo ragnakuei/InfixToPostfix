@@ -58,22 +58,29 @@ namespace InfixToPostfixPractice
             Queue<string> result = new Queue<string>();
 
             string next = string.Empty;
+            bool isHighOperand = false;
             while (input.Count > 0)
             {
-                next  = input.Peek();
+                next = input.Peek();
                 if (IsOperand(next) || IsLeftParentheses(next))
                 {
+                    if (IsHighOperand(next)) isHighOperand = true;
                     operand.Push(input.Dequeue());
                 }
                 else if (IsRightParentheses(next))
                 {
                     input.Dequeue(); // 刪掉 )
-                    if(IsOperand(operand.Peek())) result.Enqueue(operand.Pop());
+                    if (IsOperand(operand.Peek())) result.Enqueue(operand.Pop());
                     operand.Pop();   // 刪掉 (
                 }
                 else
                 {
                     result.Enqueue(input.Dequeue());
+                    if (isHighOperand)
+                    {
+                        result.Enqueue(operand.Pop());
+                        isHighOperand = false;
+                    }
                 }
             }
 
@@ -96,7 +103,13 @@ namespace InfixToPostfixPractice
 
         private bool IsOperand(string input)
         {
-            string[] operands = new string[]{ "+", "-", "*", "/" };
+            string[] operands = new string[] { "+", "-", "*", "/" };
+            return operands.Contains(input);
+        }
+
+        private bool IsHighOperand(string input)
+        {
+            string[] operands = new string[] { "*", "/" };
             return operands.Contains(input);
         }
 
