@@ -90,5 +90,23 @@ namespace InfixToPostfixPracticeTest
 
             expected.ToExpectedObject().ShouldEqual(actual);
         }
+
+        [TestMethod]
+        public void InfixToPostfix_1_add_2_parentheses_multiple_3()
+        {
+            var input = "(1+2)*3";
+            var expected = new List<string> {
+                "1",
+                "2",
+                "+",
+                "3",
+                "*",
+            };
+            InfixToPostfix target = new InfixToPostfix(input);
+
+            var actual = target.Result;
+
+            expected.ToExpectedObject().ShouldEqual(actual);
+        }
     }
 }
