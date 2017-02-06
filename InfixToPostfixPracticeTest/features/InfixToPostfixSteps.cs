@@ -14,7 +14,7 @@ namespace InfixToPostfixPracticeTest.features
         public void BeforeScenario()
         {
             this.target = new InfixToPostfix();
-            
+
         }
 
         [Given(@"輸入 (.*)")]
@@ -22,7 +22,7 @@ namespace InfixToPostfixPracticeTest.features
         {
             ScenarioContext.Current.Set<string>(input, "input");
         }
-        
+
         [When(@"進行轉換後")]
         public void When進行轉換後()
         {

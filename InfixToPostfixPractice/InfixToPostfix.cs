@@ -49,39 +49,60 @@ namespace InfixToPostfixPractice
             return result;
         }
 
-
         /// <summary>
         /// 將 Input Queue 轉為 後序表示
         /// </summary>
-        private Queue<string> InputToPostFix(Queue<string> input)
+        private Queue<string> InputToPostFix(Queue<string> input, int level = 0)
         {
             Stack<string> operand = new Stack<string>();
             Queue<string> result = new Queue<string>();
 
             string next = string.Empty;
-            bool isHighOperand = false;
             while (input.Count > 0)
             {
                 next = input.Peek();
-                if (IsOperand(next) || IsLeftParentheses(next))
+                if (IsLeftParentheses(next))
                 {
-                    if (IsHighOperand(next)) isHighOperand = true;
-                    operand.Push(input.Dequeue());
+                    input.Dequeue();
+                    var tmpResult = InputToPostFix(input, level + 1);
+
+                    foreach (var item in tmpResult)
+                    {
+                        result.Enqueue(item);
+                    }
+
+                    // 處理完 (
+                    continue;
+                }
+
+                if (IsOperand(next))
+                {
+                    // 先乘除後加減的判斷
+                    int previousPriority = operand.Count > 0
+                        ? GetOperandPriority(operand.Peek())
+                        : 0;
+                    int nextPriority = GetOperandPriority(next);
+
+                    if (previousPriority > nextPriority)
+                    {
+                        result.Enqueue(operand.Pop());
+                        operand.Push(input.Dequeue());
+                    }
+                    else
+                    {
+                        operand.Push(input.Dequeue());
+                    }
                 }
                 else if (IsRightParentheses(next))
                 {
                     input.Dequeue(); // 刪掉 )
+                    if (operand.Count <= 0) break;   // 為了 (( )) 而存在的判斷
                     if (IsOperand(operand.Peek())) result.Enqueue(operand.Pop());
-                    operand.Pop();   // 刪掉 (
+                    break;
                 }
                 else
                 {
                     result.Enqueue(input.Dequeue());
-                    if (isHighOperand)
-                    {
-                        result.Enqueue(operand.Pop());
-                        isHighOperand = false;
-                    }
                 }
             }
 
@@ -114,6 +135,20 @@ namespace InfixToPostfixPractice
         {
             return input == ")";
         }
+
+        private int GetOperandPriority(string input)
+        {
+            int result = 0;
+            _operandPriority.TryGetValue(input, out result);
+            return result;
+        }
+
+        private Dictionary<string, int> _operandPriority = new Dictionary<string, int> {
+            {"+",1 },
+            {"-",1 },
+            {"*",2 },
+            {"/",2 },
+        };
     }
 
     public static class MyExend

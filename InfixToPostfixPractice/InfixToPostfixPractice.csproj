@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{99601B50-24F5-4C2C-BC55-7A9BB8958E37}</ProjectGuid>
+    <ProjectGuid>{80CC0451-6634-4700-B353-5A20322148A6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>InfixToPostfixPractice</RootNamespace>
