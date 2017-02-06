@@ -111,19 +111,20 @@ namespace InfixToPostfixPractice
                 if (nextContent == _leftParentheses)
                 {
                     var parenthesesResult = ParenthesesToPostFix(input);
-                    QueueAdd(input, parenthesesResult);
                     nextContent = input.Peek();
+
+                    if (nextContent == _rightParentheses)
+                    {   // 為了 (( )) 的情況
+                        nextContent = input.Dequeue();   // 刪掉 )
+                        return parenthesesResult;
+                    }
                 }
                 
                 noParenthesesResult.Enqueue(input.Dequeue());
                 nextContent = input.Peek();
             }
-
-            // 刪掉 )
-            nextContent = input.Dequeue();
-
-            //Queue<string> result = NoParenthesesToPostFix(noParenthesesResult);
-            //return result;
+            
+            nextContent = input.Dequeue();     // 刪掉 )
             return NoParenthesesToPostFix(noParenthesesResult);
         }
 
